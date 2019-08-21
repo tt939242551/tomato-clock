@@ -1,6 +1,6 @@
 <view class="home-container">
   <scroll-view class="todoList" scroll-y="true">
-    <view class="{{selectTab === index ? 'item active'  : 'item'}}"
+    <view class="{{item.id ? 'item'  : 'item active'}}"
       wx:for="{{lists}}"  
       wx:for-index="index" 
       wx:key="{{item.id}}" 
@@ -15,6 +15,15 @@
       data-id="{{item.id}}" >{{item.description}}</text>
     </view>
   </scroll-view>
+  <view class="container" wx:if="{{aftercompleted}}">
+    <view class="confirm">
+      <text >确定标记完成任务{{selectCompleted}}</text>
+      <view class="actions">
+        <view hover-class='active' class="sure" bindtap="confirm">确定</view>
+        <view hover-class='active' bindtap="cancel">取消</view>
+      </view>
+    </view>
+  </view>
   <t-button type="change"   class="createButton" text="创建任务" bindtap='showConfirm'>创建任务</t-button>
   <view class="tomato-wrapper">
     <navigator class="tomato" url="/pages/tomato/tomato">

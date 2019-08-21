@@ -1,107 +1,131 @@
-
-const {http} = require('../../lib/http.js')
+var app = getApp()
 Page({
   updateIndex: '',
-  description:'',
+  description: '',
   data: {
-    lists: [
-      {
-        "id": 67,
+    lists: [{
+        "id": 1,
         "description": "我要完成任务1"
       },
       {
-        "id": 85,
+        "id": 2,
         "description": "我要完成任务2"
       },
       {
-        "id": 9,
+        "id": 3,
         "description": "我要完成任务3"
       },
       {
-        "id": 3,
+        "id": 4,
         "description": "我要完成任务4"
       }
-    ] ,
+    ],
     visibleConfirm: false,
-    newTodos:'',
+    newTodos: '',
     visibleUpdate: false,
     aftercompleted: false,
-    selectCompleted:'',
+    selectCompleted: '',
     selectTab: '',
   },
-  onShow(){
-    
-    if(!this.data.lists.length){
-      this.setData({selectTab: ''})
-    }
-    
+  onShow() {
+
   },
 
-  confirmCreate(event){
-     console.log(event.detail)
-   
-          let todo = event.detail
-          this.data.lists = todo.concat(this.data.lists)
-          this.setData({ lists: this.data.lists })
-          this.hideConfirm()
+  confirmCreate(event) {
+    if (event.detail){
+      let todo = {}
+      todo.id = this.data.lists.length + 1
+      todo.description = event.detail
+      this.data.lists = this.data.lists.concat(todo)
+      this.setData({
+        lists: this.data.lists
+      })
+      this.hideConfirm()
+      wx.showToast({
+        title: '创建成功',
+        icon: 'success',
+        duration: 1000
+      })
+    }
+    this.hideConfirm()
     
-    
-  
-  }, 
-  updateTodos(event){//更新
-    
-    let { index } = event.currentTarget.dataset
+  },
+  updateTodos(event) { //更新
+  if (event.currentTarget.dataset.id){
+    let {
+      index
+    } = event.currentTarget.dataset
     this.updateIndex = index
     let description = this.data.lists[index].description
-    this.setData({ newTodos: description,visibleUpdate : true})
+    this.setData({
+      newTodos: description,
+      visibleUpdate: true
+    })
+  }
   },
-  confirmUpdate(event) {//确认更新
-    let description = event.detail 
-    this.data.lists[this.updateIndex].description = description
-    this.setData({ lists: this.data.lists })   
+  confirmUpdate(event) { //确认更新
+    let description = event.detail
     if (description){
-       this.hideUpdate()
-       wx.showToast({
-         title: '修改成功',
-         icon: 'success',
-         duration: 1000
-       })  
-   }
-  this.hideUpdate()
-   
-  },
-  hideUpdate(){
-    this.setData({ visibleUpdate : false})
-  },
-  destroyTodo(event){//删除
-    let id = event.currentTarget.dataset.id
-    let index = event.currentTarget.dataset.index
-    this.setData({ selectTab : index})
-    setTimeout(()=>{
-      console.log(event.detail) 
-      console.log(event.currentTarget.dataset.description)      
-      this.data.lists[index].description = event.currentTarget.dataset.description
-        this.setData({ lists: this.data.lists })
-        this.setData({selectTab : ''})
+      this.data.lists[this.updateIndex].description = description
+      this.setData({
+        lists: this.data.lists
+      })
+      if (description) {
+        this.hideUpdate()
         wx.showToast({
-          title: '确认完成',
+          title: '修改成功',
           icon: 'success',
           duration: 1000
-        
+        })
+      }
+    }
+    this.hideUpdate()
+
+  },
+  hideUpdate() {
+    this.setData({
+      visibleUpdate: false
+    })
+  },
+  confirm(){
+    app.globalData.data.push(this.data.lists[this.data.selectTab])
+    this.data.lists[this.data.selectTab].id = 0
+    this.setData({ 
+      aftercompleted: false ,
+      lists: this.data.lists
+    }) 
+    setTimeout(() => {
+      wx.showToast({
+        title: '完成任务',
+        icon: 'success',
+        duration: 800
       })
-    },1000)
-    
-    
-    
+    }, 800)
   },
-  showConfirm(){ //显示创建confirm
-    this.setData({ visibleConfirm : true})
+  cancel(){
+    this.setData({ aftercompleted: false }) 
   },
-  cancelCreate(){//取消创建
+  destroyTodo(event) { //删除
+    if (event.currentTarget.dataset.id){
+    this.setData({ aftercompleted: true })
+    let id = event.currentTarget.dataset.id
+    this.setData({ selectCompleted: id })
+    let index = event.currentTarget.dataset.index
+    this.data.selectTab = index
+    }  
+  },
+  showConfirm() { //显示创建confirm
+    this.setData({
+      visibleConfirm: true
+    })
+  },
+  cancelCreate() { //取消创建
     this.hideConfirm()
   },
   hideConfirm() {
-    this.setData({ visibleConfirm: false })
+    this.setData({
+      visibleConfirm: false
+    })
   }
 
 })
