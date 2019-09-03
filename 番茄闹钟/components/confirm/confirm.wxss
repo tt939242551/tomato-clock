@@ -50,7 +50,7 @@
   content: "";
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 36%;
   transform: translate(-50%,-50%);
   width: 2rpx;
   height: 80%;

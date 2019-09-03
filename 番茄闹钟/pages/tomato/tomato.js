@@ -1,4 +1,3 @@
-// pages/tomoto/tomoto.js
 
 Page({
   timer:'',

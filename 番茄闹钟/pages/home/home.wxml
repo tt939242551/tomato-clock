@@ -6,8 +6,7 @@
       wx:key="{{item.id}}" 
       data-index="{{index}}"
       data-id="{{item.id}}"
-      wx:if="{{!item.completed}}"
-      
+      wx:if="{{!item.completed}}"  
     >
       <view bindtap="destroyTodo"  data-index="{{index}}"
       data-id="{{item.id}}"  class="{{selectTab === index ? 'select active'  : 'select'}}"></view>
